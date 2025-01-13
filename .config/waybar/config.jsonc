@@ -2,7 +2,7 @@
 {
     // "layer": "top", // Waybar at top layer
     // "position": "bottom", // Waybar position (top|bottom|left|right)
-    "height": 20, // Waybar height (to be removed for auto height)
+    "height": 25, // Waybar height (to be removed for auto height)
     // "width": 1280, // Waybar width
     "spacing": 4, // Gaps between modules (4px)
     // Choose the order of the modules
@@ -21,8 +21,8 @@
         "pulseaudio",
         "network",
         //"temperature",
-	//"cpu",
-	//"memory",
+	"cpu",
+	"memory",
         //"sway/language",
         //"power-profiles-daemon",
         "backlight",
@@ -101,13 +101,13 @@
         }
     },
     "tray": {
-        "icon-size": 21,
+        "icon-size": 20,
         "spacing": 10
     },
     "clock": {
         // "timezone": "America/New_York",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format": "{:%B %d %Y, %H:%M}",
+        "format": "{:%d/%m/%Y, %H:%M}",
         "format-alt": "{:%H:%M}"
     },
     "cpu": {
