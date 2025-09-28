@@ -19,7 +19,7 @@
     "modules-right": [
         "pulseaudio",
         "network",
-        //"power-profiles-daemon",
+        "power-profiles-daemon",
         //"cpu",
         //"memory",
         "backlight",
