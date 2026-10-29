@@ -65,21 +65,40 @@ local function resize_active(pct_x, pct_y)
     }))
 end
 
+-- Ripristina i bind DMS di resize: sulla layout italiana "equal" è Shift+0,
+-- quindi meglio usare frecce e + / - che sono tasti diretti.
 hl.unbind("SUPER + equal")
-hl.bind("SUPER + equal", function() resize_active(10, 0) end, { repeating = true })
-
 hl.unbind("SUPER + minus")
-hl.bind("SUPER + minus", function() resize_active(-10, 0) end, { repeating = true })
-
 hl.unbind("SUPER + SHIFT + equal")
-hl.bind("SUPER + SHIFT + equal", function() resize_active(0, 10) end, { repeating = true })
-
 hl.unbind("SUPER + SHIFT + minus")
-hl.bind("SUPER + SHIFT + minus", function() resize_active(0, -10) end, { repeating = true })
 
--- Bind con descrizione (tasti code:20 / code:21)
-hl.bind("SUPER + code:20", hl.dsp.window.resize({ x = -100, y = 0, relative = true }), { description = "Expand window left" })
-hl.bind("SUPER + code:21", hl.dsp.window.resize({ x = 100, y = 0, relative = true }), { description = "Shrink window left" })
+-- Orizzontale: destra = più largo, sinistra = più stretto.
+hl.unbind("SUPER + ALT + left")
+hl.bind("SUPER + ALT + left", function() resize_active(-10, 0) end, { repeating = true, description = "Resize window narrower" })
+hl.unbind("SUPER + ALT + right")
+hl.bind("SUPER + ALT + right", function() resize_active(10, 0) end, { repeating = true, description = "Resize window wider" })
+
+-- Verticale: su = più alto, giù = più basso.
+hl.unbind("SUPER + ALT + up")
+hl.bind("SUPER + ALT + up", function() resize_active(0, 10) end, { repeating = true, description = "Resize window taller" })
+hl.unbind("SUPER + ALT + down")
+hl.bind("SUPER + ALT + down", function() resize_active(0, -10) end, { repeating = true, description = "Resize window shorter" })
+
+-- L'Alt destro sulla layout italiana è AltGr (Mod5), non Mod1/ALT:
+-- aggiungo gli alias per far funzionare il resize con entrambi i tasti Alt.
+hl.unbind("SUPER + MOD5 + left")
+hl.bind("SUPER + MOD5 + left", function() resize_active(-10, 0) end, { repeating = true, description = "Resize window narrower (AltGr)" })
+hl.unbind("SUPER + MOD5 + right")
+hl.bind("SUPER + MOD5 + right", function() resize_active(10, 0) end, { repeating = true, description = "Resize window wider (AltGr)" })
+hl.unbind("SUPER + MOD5 + up")
+hl.bind("SUPER + MOD5 + up", function() resize_active(0, 10) end, { repeating = true, description = "Resize window taller (AltGr)" })
+hl.unbind("SUPER + MOD5 + down")
+hl.bind("SUPER + MOD5 + down", function() resize_active(0, -10) end, { repeating = true, description = "Resize window shorter (AltGr)" })
+
+-- Alias orizzontali con - e + (sulla layout italiana + è un tasto dedicato).
+hl.unbind("SUPER + plus")
+hl.bind("SUPER + plus", function() resize_active(10, 0) end, { repeating = true, description = "Resize window wider" })
+hl.bind("SUPER + minus", function() resize_active(-10, 0) end, { repeating = true, description = "Resize window narrower" })
 
 -- ==================
 -- GESTURES
