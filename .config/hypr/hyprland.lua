@@ -111,6 +111,39 @@ hl.layer_rule({ match = { namespace = "^(quickshell)$" }, no_anim = true })
 hl.layer_rule({ match = { namespace = "^dms:.*" }, no_anim = true })
 
 -- ==================
+-- SCRATCHPAD: FINESTRE SEMPRE FLOATING
+-- ==================
+local function is_scratchpad_workspace(ws)
+    local name = ws and ws.name or ""
+    return name == "special" or name:match("^special:") ~= nil
+end
+
+local function float_in_scratchpad(w)
+    if not w or not is_scratchpad_workspace(w.workspace) then return end
+    if not w.floating then
+        hl.dispatch(hl.dsp.window.float({ action = "set", window = w }))
+    end
+end
+
+-- Copre le finestre aperte direttamente nello scratchpad.
+hl.on("window.open", float_in_scratchpad)
+
+-- Copre le finestre spostate nello scratchpad (DMS, script o move manuale).
+hl.on("window.move_to_workspace", function(w, ws)
+    if not w or not is_scratchpad_workspace(ws) then return end
+    if not w.floating then
+        hl.dispatch(hl.dsp.window.float({ action = "set", window = w }))
+    end
+end)
+
+-- Copre le finestre già presenti nello scratchpad al reload della config.
+hl.on("config.reloaded", function()
+    for _, w in ipairs(hl.get_windows()) do
+        float_in_scratchpad(w)
+    end
+end)
+
+-- ==================
 -- DMS FRAGMENTS
 -- ==================
 require("dms.colors")
