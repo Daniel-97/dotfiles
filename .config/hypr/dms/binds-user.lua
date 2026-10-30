@@ -103,14 +103,27 @@ hl.bind("SUPER + minus", function() resize_active(-10, 0) end, { repeating = tru
 -- ==================
 -- GESTURES
 -- ==================
--- Swipe 3 dita verso l'alto: chiude le notifiche se aperte, altrimenti overview DMS.
-hl.gesture({
-    fingers = 3,
-    direction = "up",
-    action = function()
-        hl.exec_cmd("$HOME/.config/hypr/scripts/dms-swipe.sh up")
-    end,
-})
+-- Swipe 3 dita su: apre lo scratchpad. Giù: lo chiude.
+local function scratchpad_is_open()
+    local ws   = hl.get_active_special_workspace()
+    local name = ws and ws.name or ""
+    return name == "special" or name == "special:special"
+end
+
+local function scratchpad_open()
+    if not scratchpad_is_open() then
+        hl.dispatch(hl.dsp.workspace.toggle_special("special"))
+    end
+end
+
+local function scratchpad_close()
+    if scratchpad_is_open() then
+        hl.dispatch(hl.dsp.workspace.toggle_special("special"))
+    end
+end
+
+hl.gesture({ fingers = 3, direction = "up", action = scratchpad_open })
+hl.gesture({ fingers = 3, direction = "down", action = scratchpad_close })
 
 -- Swipe 3 dita con SUPER: ridimensiona la finestra attiva.
 hl.gesture({ fingers = 3, direction = "swipe", mods = "SUPER", action = "resize" })
