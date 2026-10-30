@@ -29,7 +29,7 @@ hl.config({
         kb_layout = "it",
         numlock_by_default = true,
         accel_profile = "flat",
-        sensitivity = 5.0,
+        sensitivity = 1.0,
         touchpad = {
             natural_scroll = true,
             disable_while_typing = false,
@@ -53,7 +53,7 @@ hl.config({
         shadow = {
             enabled = true,
             range = 30,
-            render_power = 5,
+            render_power = 4,
             offset = "0 5",
             color = "rgba(00000070)",
         },
@@ -158,3 +158,11 @@ require("dms.input")
 require("dms.binds")
 require("dms.binds-user")
 require("dms.windowrules")
+
+-- ==================
+-- RESIZE SUI BORDI
+-- ==================
+-- Nativo di Hyprland: trascina bordo/gap col tasto sinistro.
+-- Non richiede Meta; con Meta+sinistro resta attivo il move della finestra.
+-- Va dopo i require DMS perché dms/layout.lua imposta resize_on_border = false.
+hl.config({ general = { resize_on_border = true } })
