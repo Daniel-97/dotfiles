@@ -84,9 +84,9 @@ hl.animation({ leaf = "windowsMove", enabled = true, speed = 4, bezier = "defaul
 hl.animation({ leaf = "fade", enabled = true, speed = 3, bezier = "default" })
 hl.animation({ leaf = "border", enabled = true, speed = 3, bezier = "default" })
 
--- Scratchpad: entra dall'alto verso il basso, esce risalendo.
-hl.animation({ leaf = "specialWorkspaceIn", enabled = true, speed = 5, bezier = "default", style = "slidevert top" })
-hl.animation({ leaf = "specialWorkspaceOut", enabled = true, speed = 5, bezier = "default", style = "slidevert bottom" })
+-- Scratchpad: entra dal basso verso l'alto, esce scendendo.
+hl.animation({ leaf = "specialWorkspaceIn", enabled = true, speed = 5, bezier = "default", style = "slidevert bottom" })
+hl.animation({ leaf = "specialWorkspaceOut", enabled = true, speed = 5, bezier = "default", style = "slidevert top" })
 
 -- ==================
 -- WINDOW RULES
