@@ -32,7 +32,7 @@ hl.config({
         sensitivity = 1.0,
         touchpad = {
             natural_scroll = true,
-            disable_while_typing = false,
+            disable_while_typing = true,
             scroll_factor = 0.3,
         },
     },
@@ -50,6 +50,8 @@ hl.config({
         rounding = 12,
         active_opacity = 1.0,
         inactive_opacity = 1.0,
+        dim_inactive = true,
+        dim_strength = 0.1,
         shadow = {
             enabled = true,
             range = 30,

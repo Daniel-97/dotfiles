@@ -22,6 +22,9 @@ hl.bind("SUPER + N", hl.dsp.exec_cmd("dms ipc call notifications toggle"))
 hl.unbind("SUPER + SHIFT + N")
 hl.bind("SUPER + SHIFT + N", hl.dsp.exec_cmd("dms ipc call notepad toggle"))
 
+-- Clipboard DMS (SUPER + V è usato per il floating)
+hl.bind("SUPER + SHIFT + V", hl.dsp.exec_cmd("dms ipc call clipboard toggle"), { description = "Clipboard history" })
+
 -- ==================
 -- WINDOW MANAGEMENT
 -- ==================
