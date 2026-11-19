@@ -60,7 +60,13 @@ mkdir -p ~/.config/hypr/.backups/manual-$(date +%F)
 cp -a ~/.config/hypr/. ~/.config/hypr/.backups/manual-$(date +%F)/ 2>/dev/null || true
 cp -a .config/hypr/. ~/.config/hypr/
 chmod +x ~/.config/hypr/scripts/scratchpad-move.sh
+cp -a .config/ghostty ~/.config/
 ```
+
+> **Ghostty:** legge sia `~/.config/ghostty/config` sia `config.ghostty`, e
+> quest'ultimo ha precedenza. La prima volta Ghostty crea un `config.ghostty`
+> template (solo commenti): puoi rimuoverlo per evitare override silenziosi.
+> Per ricaricare la config in una finestra aperta: `Ctrl+Shift+,`.
 
 Al login (GDM → ingranaggio → *Hyprland*) Noctalia parte da `hyprland.lua`.
 GNOME resta disponibile come fallback.

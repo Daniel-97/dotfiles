@@ -13,7 +13,9 @@ cursor-style = block
 cursor-style-blink = true
 
 # Scrollback
-scrollback-limit = 3023
+# `scrollback-limit` (byte) è deprecato: veniva interpretato come 3023 BYTE.
+# In Ghostty >= 1.4 il limite in righe è `scrollback-limit-lines`.
+scrollback-limit-lines = 3023
 
 # Terminal features
 mouse-hide-while-typing = true
