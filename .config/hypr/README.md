@@ -30,16 +30,11 @@ sudo dnf install hyprland noctalia \
   brightnessctl playerctl wl-clipboard
 ```
 
-> **Lockscreen:** il pacchetto `noctalia` dei repo Fedora **non include
-> `noctalia-pam-helper`**, quindi il lock screen non riesce ad autenticare.
-> Usa il pacchetto del COPR, che lo contiene:
->
-> ```bash
-> sudo dnf swap noctalia noctalia-git
-> ```
->
-> `hyprland.lua` avvia `hypridle` solo se l'helper esiste, per non rischiare
-> un auto-lock senza autenticazione.
+> **Lockscreen:** il pacchetto `noctalia` dei repo Fedora funziona. La 5.5.0
+> autentica via PAM rieseguendo se stessa (`/proc/self/exe pam-helper`), quindi
+> **non** serve `/usr/libexec/noctalia/noctalia-pam-helper` (file introdotto
+> dopo la 5.5.0 e presente solo in `noctalia-git`). Non fare `dnf swap`:
+> `hypridle` viene avviato normalmente da `hyprland.lua`.
 
 Agente polkit (prompt grafici per i comandi privilegiati):
 
@@ -49,6 +44,12 @@ noctalia msg config-set shell.polkit_agent true
 
 `ghostty` (terminale usato dai bind) è già installato; il suo config non deve
 contenere `theme = dankcolors`, che veniva generato da DMS.
+
+> **Idle:** `hypridle` e Noctalia espongono entrambi `org.freedesktop.ScreenSaver`.
+> hypridle logga `Another service is already providing ...` ma funziona; gli
+> inhibit delle app (video/browser) però arrivano a Noctalia, non a hypridle.
+> Se il lock scatta durante la riproduzione, sposta `idle.behavior.*` su
+> Noctalia e rimuovi hypridle.
 
 ## Installazione
 

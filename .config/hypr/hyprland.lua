@@ -15,9 +15,7 @@ hl.on("hyprland.start", function()
     -- Idle/lock/suspend: le behavior di Noctalia sono disattivate di default,
     -- quindi usiamo hypridle (vedi hypridle.conf). In alternativa abilita
     -- idle.behavior.* in settings.toml e rimuovi questa riga.
-    -- Il controllo sull'helper evita di avviare l'idle se la lockscreen non
-    -- potrebbe autenticare (pacchetto `noctalia` senza noctalia-pam-helper).
-    hl.exec_cmd("sh -c '[ -x /usr/libexec/noctalia/noctalia-pam-helper ] && exec hypridle'")
+    hl.exec_cmd("hypridle")
 end)
 
 -- ==================
