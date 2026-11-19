@@ -12,6 +12,12 @@
 hl.on("hyprland.start", function()
     hl.exec_cmd("dbus-update-activation-environment --systemd --all")
     hl.exec_cmd("noctalia")
+    -- Idle/lock/suspend: le behavior di Noctalia sono disattivate di default,
+    -- quindi usiamo hypridle (vedi hypridle.conf). In alternativa abilita
+    -- idle.behavior.* in settings.toml e rimuovi questa riga.
+    -- Il controllo sull'helper evita di avviare l'idle se la lockscreen non
+    -- potrebbe autenticare (pacchetto `noctalia` senza noctalia-pam-helper).
+    hl.exec_cmd("sh -c '[ -x /usr/libexec/noctalia/noctalia-pam-helper ] && exec hypridle'")
 end)
 
 -- ==================
