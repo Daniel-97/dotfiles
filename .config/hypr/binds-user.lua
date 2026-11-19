@@ -1,6 +1,8 @@
--- Override personali ai default DMS 2.0.
--- Questo file viene caricato dopo dms/binds.lua: hl.unbind rimuove il bind
--- stock già registrato, poi hl.bind registra il comportamento migrato.
+-- Override personali sopra binds.lua.
+-- Questo file viene caricato dopo binds.lua: hl.unbind rimuove il bind
+-- stock gia' registrato, poi hl.bind registra il comportamento desiderato.
+
+local ipc = "noctalia msg "
 
 -- ==================
 -- APP / LAUNCHER
@@ -11,19 +13,16 @@ hl.bind("SUPER + Q", hl.dsp.exec_cmd("ghostty"))
 hl.bind("SUPER + E", hl.dsp.exec_cmd("nautilus"))
 
 hl.unbind("SUPER + D")
-hl.bind("SUPER + D", hl.dsp.exec_cmd("dms ipc call spotlight toggle"))
+hl.bind("SUPER + D", hl.dsp.exec_cmd(ipc .. "panel-toggle launcher"))
 
 hl.unbind("SUPER + M")
-hl.bind("SUPER + M", hl.dsp.exec_cmd("dms ipc call processlist focusOrToggle"))
+hl.bind("SUPER + M", hl.dsp.exec_cmd(ipc .. "panel-toggle control-center"))
 
 hl.unbind("SUPER + N")
-hl.bind("SUPER + N", hl.dsp.exec_cmd("dms ipc call notifications toggle"))
+hl.bind("SUPER + N", hl.dsp.exec_cmd(ipc .. "panel-toggle control-center"))
 
-hl.unbind("SUPER + SHIFT + N")
-hl.bind("SUPER + SHIFT + N", hl.dsp.exec_cmd("dms ipc call notepad toggle"))
-
--- Clipboard DMS (SUPER + V è usato per il floating)
-hl.bind("SUPER + SHIFT + V", hl.dsp.exec_cmd("dms ipc call clipboard toggle"), { description = "Clipboard history" })
+-- Clipboard Noctalia (SUPER + V resta il floating)
+hl.bind("SUPER + SHIFT + V", hl.dsp.exec_cmd(ipc .. "panel-toggle clipboard"), { description = "Clipboard history" })
 
 -- ==================
 -- WINDOW MANAGEMENT
@@ -38,17 +37,17 @@ hl.unbind("SUPER + G")
 hl.bind("SUPER + G", hl.dsp.group.toggle())
 
 hl.unbind("SUPER + L")
-hl.bind("SUPER + L", hl.dsp.exec_cmd("dms ipc call lock lock"))
+hl.bind("SUPER + L", hl.dsp.exec_cmd(ipc .. "session lock"))
 
 -- Il dispatcher Lua accetta solo pixel; "exact 100%" resta via hyprctl.
 hl.unbind("SUPER + CTRL + F")
 hl.bind("SUPER + CTRL + F", hl.dsp.exec_cmd("hyprctl dispatch resizeactive exact 100%"))
 
 -- ==================
--- SCRATCHPAD DMS
+-- SCRATCHPAD
 -- ==================
 hl.unbind("SUPER + S")
-hl.bind("SUPER + S", hl.dsp.exec_cmd("dms ipc call scratchpad toggle special"))
+hl.bind("SUPER + S", hl.dsp.workspace.toggle_special("special"))
 
 hl.unbind("SUPER + SHIFT + S")
 hl.bind("SUPER + SHIFT + S", hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/scratchpad-move.sh"))
@@ -68,26 +67,26 @@ local function resize_active(pct_x, pct_y)
     }))
 end
 
--- Ripristina i bind DMS di resize: sulla layout italiana "equal" è Shift+0,
+-- Ripristina i bind di resize: sulla layout italiana "equal" e' Shift+0,
 -- quindi meglio usare frecce e + / - che sono tasti diretti.
 hl.unbind("SUPER + equal")
 hl.unbind("SUPER + minus")
 hl.unbind("SUPER + SHIFT + equal")
 hl.unbind("SUPER + SHIFT + minus")
 
--- Orizzontale: destra = più largo, sinistra = più stretto.
+-- Orizzontale: destra = piu' largo, sinistra = piu' stretto.
 hl.unbind("SUPER + ALT + left")
 hl.bind("SUPER + ALT + left", function() resize_active(-10, 0) end, { repeating = true, description = "Resize window narrower" })
 hl.unbind("SUPER + ALT + right")
 hl.bind("SUPER + ALT + right", function() resize_active(10, 0) end, { repeating = true, description = "Resize window wider" })
 
--- Verticale: su = più alto, giù = più basso.
+-- Verticale: su = piu' alto, giu' = piu' basso.
 hl.unbind("SUPER + ALT + up")
 hl.bind("SUPER + ALT + up", function() resize_active(0, 10) end, { repeating = true, description = "Resize window taller" })
 hl.unbind("SUPER + ALT + down")
 hl.bind("SUPER + ALT + down", function() resize_active(0, -10) end, { repeating = true, description = "Resize window shorter" })
 
--- L'Alt destro sulla layout italiana è AltGr (Mod5), non Mod1/ALT:
+-- L'Alt destro sulla layout italiana e' AltGr (Mod5), non Mod1/ALT:
 -- aggiungo gli alias per far funzionare il resize con entrambi i tasti Alt.
 hl.unbind("SUPER + MOD5 + left")
 hl.bind("SUPER + MOD5 + left", function() resize_active(-10, 0) end, { repeating = true, description = "Resize window narrower (AltGr)" })
@@ -98,7 +97,7 @@ hl.bind("SUPER + MOD5 + up", function() resize_active(0, 10) end, { repeating = 
 hl.unbind("SUPER + MOD5 + down")
 hl.bind("SUPER + MOD5 + down", function() resize_active(0, -10) end, { repeating = true, description = "Resize window shorter (AltGr)" })
 
--- Alias orizzontali con - e + (sulla layout italiana + è un tasto dedicato).
+-- Alias orizzontali con - e + (sulla layout italiana + e' un tasto dedicato).
 hl.unbind("SUPER + plus")
 hl.bind("SUPER + plus", function() resize_active(10, 0) end, { repeating = true, description = "Resize window wider" })
 hl.bind("SUPER + minus", function() resize_active(-10, 0) end, { repeating = true, description = "Resize window narrower" })
@@ -106,7 +105,7 @@ hl.bind("SUPER + minus", function() resize_active(-10, 0) end, { repeating = tru
 -- ==================
 -- GESTURES
 -- ==================
--- Swipe 3 dita su: apre lo scratchpad. Giù: lo chiude.
+-- Swipe 3 dita su: apre lo scratchpad. Giu': lo chiude.
 local function scratchpad_is_open()
     local ws   = hl.get_active_special_workspace()
     local name = ws and ws.name or ""

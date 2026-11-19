@@ -1,24 +1,36 @@
 #!/usr/bin/env bash
-# Sposta la finestra attiva nello scratchpad DMS.
-# Se la finestra è già nello scratchpad, la riporta fuori.
+# Sposta la finestra attiva dentro/fuori dallo scratchpad "special".
+# Versione senza DMS: usa solo hyprctl e ricorda il workspace di provenienza
+# in $XDG_RUNTIME_DIR, così il ripristino torna dove era la finestra.
 
-ws="$(hyprctl activewindow -j 2>/dev/null | python3 -c '
+set -u
+
+win="$(hyprctl activewindow -j 2>/dev/null)"
+[ -n "$win" ] || exit 0
+
+read -r addr ws < <(printf '%s' "$win" | python3 -c '
 import json, sys
-try:
-    d = json.load(sys.stdin)
-except Exception:
-    sys.exit()
-print((d.get("workspace") or {}).get("name") or "")
-' 2>/dev/null)"
+d = json.load(sys.stdin)
+print(d.get("address", ""), (d.get("workspace") or {}).get("name", ""))
+')
+
+[ -n "$addr" ] || exit 0
+
+state_dir="${XDG_RUNTIME_DIR:-/tmp}/hypr-scratchpad"
+mkdir -p "$state_dir"
+state="$state_dir/$addr"
 
 case "$ws" in
-    special|special:special)
-        dms ipc call scratchpad restore
+    special|special:*)
+        target="$(cat "$state" 2>/dev/null || echo "1")"
+        hyprctl dispatch movetoworkspacesilent "$target,address:$addr"
+        rm -f "$state"
         ;;
     "")
         exit 0
         ;;
     *)
-        dms ipc call scratchpad move special
+        printf '%s' "$ws" > "$state"
+        hyprctl dispatch movetoworkspacesilent "special:special,address:$addr"
         ;;
 esac

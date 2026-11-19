@@ -1,15 +1,17 @@
 -- Hyprland configuration (Lua)
--- Migrazione da hyprland.conf alla config Lua (Hyprland >= 0.55, DMS 2.0).
--- I frammenti gestiti da DMS sono inclusi in fondo.
+-- Hyprland >= 0.55, shell: Noctalia v5.
+-- Porting dal setup DMS 2.0: la logica di finestre/workspace e' la stessa,
+-- lo strato "shell" (barra, launcher, notifiche, lock, OSD) e' Noctalia.
 
 -- ==================
 -- STARTUP
 -- ==================
--- dms.service è già abilitato via systemd: qui esportiamo l'ambiente
--- e avviamo il target di sessione, senza lanciare "dms run" una seconda volta.
+-- Noctalia si avvia dal compositor. Se preferisci gestirlo come servizio
+-- systemd utente, sostituisci la riga con:
+--   hl.exec_cmd("systemctl --user start noctalia.service")
 hl.on("hyprland.start", function()
     hl.exec_cmd("dbus-update-activation-environment --systemd --all")
-    hl.exec_cmd("systemctl --user start hyprland-session.target")
+    hl.exec_cmd("noctalia")
 end)
 
 -- ==================
@@ -20,6 +22,8 @@ hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
 hl.env("QT_QPA_PLATFORMTHEME", "gtk3")
 hl.env("QT_QPA_PLATFORMTHEME_QT6", "gtk3")
 hl.env("TERMINAL", "ghostty")
+hl.env("XCURSOR_SIZE", "24")
+hl.env("HYPRCURSOR_SIZE", "24")
 
 -- ==================
 -- INPUT
@@ -58,6 +62,14 @@ hl.config({
             render_power = 4,
             offset = "0 5",
             color = "rgba(00000070)",
+        },
+        -- Blur richiesto dalle superfici Noctalia (barra, pannelli, OSD).
+        blur = {
+            enabled = true,
+            xray = true,
+            size = 3,
+            passes = 2,
+            vibrancy = 0.1696,
         },
     },
     misc = {
@@ -112,10 +124,6 @@ hl.window_rule({ match = { class = "^(xdg-desktop-portal)$" }, float = true })
 hl.window_rule({ match = { class = "^(firefox)$", title = "^(Picture-in-Picture)$" }, float = true })
 hl.window_rule({ match = { class = "^(zoom)$" }, float = true })
 
--- DMS layers: niente animazioni
-hl.layer_rule({ match = { namespace = "^(quickshell)$" }, no_anim = true })
-hl.layer_rule({ match = { namespace = "^dms:.*" }, no_anim = true })
-
 -- ==================
 -- SCRATCHPAD: FINESTRE SEMPRE FLOATING
 -- ==================
@@ -134,7 +142,7 @@ end
 -- Copre le finestre aperte direttamente nello scratchpad.
 hl.on("window.open", float_in_scratchpad)
 
--- Copre le finestre spostate nello scratchpad (DMS, script o move manuale).
+-- Copre le finestre spostate nello scratchpad (bind, script o move manuale).
 hl.on("window.move_to_workspace", function(w, ws)
     if not w or not is_scratchpad_workspace(ws) then return end
     if not w.floating then
@@ -142,7 +150,7 @@ hl.on("window.move_to_workspace", function(w, ws)
     end
 end)
 
--- Copre le finestre già presenti nello scratchpad al reload della config.
+-- Copre le finestre gia' presenti nello scratchpad al reload della config.
 hl.on("config.reloaded", function()
     for _, w in ipairs(hl.get_windows()) do
         float_in_scratchpad(w)
@@ -150,21 +158,17 @@ hl.on("config.reloaded", function()
 end)
 
 -- ==================
--- DMS FRAGMENTS
+-- FRAMMENTI
 -- ==================
-require("dms.colors")
-require("dms.outputs")
-require("dms.layout")
-require("dms.cursor")
-require("dms.input")
-require("dms.binds")
-require("dms.binds-user")
-require("dms.windowrules")
+require("colors")
+require("outputs")
+require("noctalia")
+require("binds")
+require("binds-user")
 
 -- ==================
 -- RESIZE SUI BORDI
 -- ==================
 -- Nativo di Hyprland: trascina bordo/gap col tasto sinistro.
 -- Non richiede Meta; con Meta+sinistro resta attivo il move della finestra.
--- Va dopo i require DMS perché dms/layout.lua imposta resize_on_border = false.
 hl.config({ general = { resize_on_border = true } })
