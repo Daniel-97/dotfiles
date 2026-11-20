@@ -11,6 +11,10 @@
 --   hl.exec_cmd("systemctl --user start noctalia.service")
 hl.on("hyprland.start", function()
     hl.exec_cmd("dbus-update-activation-environment --systemd --all")
+    -- DPI per le app XWayland: 96 * 1.0 = 96 (scala 1.00). Con force_zero_scaling
+    -- (vedi sezione INPUT) lo scaling delle app X11 e' gestito dalle app
+    -- stesse tramite Xft.dpi, non dal compositor.
+    hl.exec_cmd("sh -c \"echo 'Xft.dpi: 96' | xrdb -merge -\"")
     hl.exec_cmd("noctalia")
     -- Idle/lock/suspend: le behavior di Noctalia sono disattivate di default,
     -- quindi usiamo hypridle (vedi hypridle.conf). In alternativa abilita
@@ -56,6 +60,9 @@ hl.config({
     },
     decoration = {
         rounding = 12,
+        -- Vibrancy screen-wide: compensa il gamut ridotto del pannello
+        -- (~66% sRGB). Fattori regolabili in shaders/vibrancy.frag.
+        screen_shader = "/home/dan/.config/hypr/shaders/vibrancy.frag",
         active_opacity = 1.0,
         inactive_opacity = 1.0,
         dim_inactive = true,
@@ -80,6 +87,28 @@ hl.config({
         disable_hyprland_logo = true,
         disable_splash_rendering = true,
         vrr = 1,
+        -- Le finestre lente aprono sul workspace in cui sono state LANCIATE,
+        -- non in quello attivo al momento dell'apertura.
+        -- 2 = tracking persistente (vale anche per i processi figli); il
+        -- token scade dopo 60s (default 10s: le app lente sfuggivano al
+        -- tracking prima ancora di aprire la finestra).
+        initial_workspace_tracking = 2,
+        initial_workspace_token_timeout = 60,
+    },
+
+    -- XWayland: force_zero_scaling serviva con lo scaling frazionario (le app
+    -- X11 venivano riscalate dal compositor -> testo sgranato). Con scala
+    -- 1.00 la regola e' inerte ma innocua: la teniamo per se torni a scale
+    -- frazionarie. Le app X11 si dimensionano comunque via Xft.dpi
+    -- (impostato all'avvio, vedi sezione STARTUP).
+    xwayland = {
+        force_zero_scaling = true,
+    },
+    render = {
+        -- Curva di trasferimento per i contenuti SDR senza tag colore.
+        -- "gamma22" rende i mezzitoni leggermente piu' profondi: si puo'
+        -- provare dal pannello colore (scripts/color-panel.sh).
+        cm_sdr_eotf = "gamma22",
     },
     dwindle = {
         preserve_split = true,
@@ -109,6 +138,17 @@ hl.animation({ leaf = "specialWorkspaceOut", enabled = true, speed = 5, bezier =
 -- ==================
 -- WINDOW RULES
 -- ==================
+-- Ghostty su Hyprland >= 0.55: ghostty (GTK4) dichiara l'intera superficie
+-- come opaque region, quindi il suo background-opacity nativo non produce
+-- trasparenza. La gestiamo lato compositor: regola opacity (attiva e
+-- inattiva a 0.85, come il vecchio setup DMS). Nota: anche il testo risulta
+-- leggermente traslucido, e' il compromesso noto di questo approccio.
+hl.window_rule({
+    name = "ghostty-transparency",
+    match = { class = "^(com\\.mitchellh\\.ghostty)$" },
+    opacity = "0.85 0.85",
+})
+
 hl.window_rule({ match = { class = "^(org\\.wezfurlong\\.wezterm)$" }, tile = true })
 
 hl.window_rule({ match = { class = "^(org\\.gnome\\.)" }, rounding = 12 })

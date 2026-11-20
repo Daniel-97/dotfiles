@@ -39,9 +39,19 @@ hl.bind("SUPER + G", hl.dsp.group.toggle())
 hl.unbind("SUPER + L")
 hl.bind("SUPER + L", hl.dsp.exec_cmd(ipc .. "session lock"))
 
--- Il dispatcher Lua accetta solo pixel; "exact 100%" resta via hyprctl.
+-- "resizeactive exact 100%" non e' piu' raggiungibile: con la config Lua
+-- "hyprctl dispatch" accetta solo espressioni hl.dsp.*, e il dispatcher Lua
+-- accetta solo pixel. Calcoliamo il 100% dalla dimensione del monitor attivo
+-- (size e' in pixel raw, va divisa per scale per ottenere i pixel di layout).
 hl.unbind("SUPER + CTRL + F")
-hl.bind("SUPER + CTRL + F", hl.dsp.exec_cmd("hyprctl dispatch resizeactive exact 100%"))
+hl.bind("SUPER + CTRL + F", function()
+    local m = hl.get_active_monitor()
+    if not m or not m.size or not m.scale then return end
+    hl.dispatch(hl.dsp.window.resize({
+        x = math.floor(m.size.width / m.scale),
+        y = math.floor(m.size.height / m.scale),
+    }))
+end, { description = "Resize window to monitor size" })
 
 -- ==================
 -- SCRATCHPAD
@@ -129,3 +139,11 @@ hl.gesture({ fingers = 3, direction = "down", action = scratchpad_close })
 
 -- Swipe 3 dita con SUPER: ridimensiona la finestra attiva.
 hl.gesture({ fingers = 3, direction = "swipe", mods = "SUPER", action = "resize" })
+
+-- ==================
+-- COLORI / VIBRANCY
+-- ==================
+-- Slider grafico per la saturazione dello shader (scripts/vibrancy-gui.sh).
+hl.bind("SUPER + B", hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/vibrancy-gui.sh"), { description = "Slider saturazione (vibrancy)" })
+-- Pannello colore completo: SAT/CONTR/temperatura + cm preset + EOTF.
+hl.bind("SUPER + SHIFT + B", hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/color-panel.sh"), { description = "Pannello colore" })

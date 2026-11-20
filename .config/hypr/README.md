@@ -14,7 +14,7 @@ al posto di `dms ipc call`.
 - `binds.lua`: bind predefiniti, già tradotti in comandi `noctalia msg`.
 - `binds-user.lua`: override personali (caricato dopo `binds.lua`).
 - `colors.lua`: colori bordi/gruppi, **statici** (prima li generava DMS/matugen).
-- `outputs.lua`: monitor `eDP-1` 1920x1200, refresh `preferred`, scala 1.25.
+- `outputs.lua`: monitor `eDP-1` 1920x1200, refresh `preferred`, scala 1.00.
 - `hypridle.conf`: idle/suspend; il lock passa da `noctalia msg session lock`.
 - `scripts/scratchpad-move.sh`: sposta/riprende la finestra attiva dallo scratchpad.
 
@@ -60,22 +60,22 @@ mkdir -p ~/.config/hypr/.backups/manual-$(date +%F)
 cp -a ~/.config/hypr/. ~/.config/hypr/.backups/manual-$(date +%F)/ 2>/dev/null || true
 cp -a .config/hypr/. ~/.config/hypr/
 chmod +x ~/.config/hypr/scripts/scratchpad-move.sh
-cp -a .config/ghostty ~/.config/
 ```
-
-> **Ghostty:** legge sia `~/.config/ghostty/config` sia `config.ghostty`, e
-> quest'ultimo ha precedenza. La prima volta Ghostty crea un `config.ghostty`
-> template (solo commenti): puoi rimuoverlo per evitare override silenziosi.
-> Per ricaricare la config in una finestra aperta: `Ctrl+Shift+,`.
 
 Al login (GDM → ingranaggio → *Hyprland*) Noctalia parte da `hyprland.lua`.
 GNOME resta disponibile come fallback.
 
 ## Note
 
-- I workspace persistenti 1–9 sono fissati a `eDP-1` in `noctalia.lua`: se
+- I workspace persistenti 1–10 sono fissati a `eDP-1` in `noctalia.lua`: se
   aggiungi un monitor esterno, aggiorna `monitor`.
 - Su layout italiano `AltGr` è Mod5: i resize con Super+Alt hanno anche gli
   alias Super+MOD5 in `binds-user.lua`.
+- Con la config Lua `hyprctl dispatch` accetta **solo espressioni Lua**:
+  `hyprctl dispatch 'hl.dsp.window.move({ ... })'` funziona, la vecchia forma
+  testuale (`hyprctl dispatch movetoworkspacesilent ...`) fallisce con errore
+  di parsing e non fa nulla. La usano `scripts/scratchpad-move.sh` e i comandi
+  `dpms` di `hypridle.conf`; il resize di `SUPER+CTRL+F` è invece calcolato in
+  Lua puro dentro `binds-user.lua`.
 - Se attivi `ecosystem.enforce_permissions = true`, scommenta i permessi per
   `noctalia` (screencopy/keyboard) in `noctalia.lua`.
