@@ -18,12 +18,7 @@ transition_duration = 300
 [lockscreen_widgets]
 enabled = true
 schema_version = 2
-widget_order = [
-    "lockscreen-login-box@eDP-1",
-    "lockscreen-widget-0000000000000001",
-    "lockscreen-widget-0000000000000002",
-    "lockscreen-widget-0000000000000004"
-]
+widget_order = [ "lockscreen-login-box@eDP-1", "lockscreen-widget-0000000000000001", "lockscreen-widget-0000000000000004" ]
 
     [lockscreen_widgets.grid]
     cell_size = 16
@@ -72,23 +67,8 @@ widget_order = [
 
         [lockscreen_widgets.widget.lockscreen-widget-0000000000000001.settings]
         background = false
-        format = "{:%H:%M}"
+        format = "{:%~a %d %b · %H:%M}"
         shadow = true
-
-    [lockscreen_widgets.widget.lockscreen-widget-0000000000000002]
-    box_height = 0.0
-    box_width = 0.0
-    cx = 1698.9000244140625
-    cy = 1054.5
-    output = "eDP-1"
-    placement_height = 1200.0
-    placement_width = 1920.0
-    rotation = 0.0
-    type = "clock"
-
-        [lockscreen_widgets.widget.lockscreen-widget-0000000000000002.settings]
-        background = false
-        format = "{:%Y %m %d}"
 
     [lockscreen_widgets.widget.lockscreen-widget-0000000000000004]
     box_height = 0.0
@@ -174,6 +154,9 @@ path = "/home/dan/Pictures/wallpapers/art002e000190~large.jpg"
 
 [wallpaper.monitors.eDP-1]
 path = "/home/dan/Pictures/wallpapers/art002e000190~large.jpg"
+
+[widget.clock]
+format = "{:%~a %d %b · %H:%M}"
 
 [widget.media]
 hide_when_no_media = true

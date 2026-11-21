@@ -15,7 +15,8 @@ hl.on("hyprland.start", function()
     -- (vedi sezione INPUT) lo scaling delle app X11 e' gestito dalle app
     -- stesse tramite Xft.dpi, non dal compositor.
     hl.exec_cmd("sh -c \"echo 'Xft.dpi: 96' | xrdb -merge -\"")
-    hl.exec_cmd("noctalia")
+    -- LC_TIME italiano per Noctalia: nomi di giorni/mesi localizzati nella barra (es. "Sab 21 nov").
+    hl.exec_cmd("env LC_TIME=it_IT.UTF-8 noctalia")
     -- Idle/lock/suspend: le behavior di Noctalia sono disattivate di default,
     -- quindi usiamo hypridle (vedi hypridle.conf). In alternativa abilita
     -- idle.behavior.* in settings.toml e rimuovi questa riga.
